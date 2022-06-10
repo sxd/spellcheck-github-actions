@@ -25,14 +25,14 @@ SPLIT=false
 
 if [ -n "$INPUT_SOURCE_FILES" ]; then
 
-    if grep -q $SINGLE <<< "$INPUT_SOURCE_FILES"; then
+    if grep -q $SINGLE <<<"$INPUT_SOURCE_FILES"; then
         OIFS=$IFS
         IFS=$SINGLE
         SPLIT=true
         echo "Detected separator: >$SINGLE< (single quote)"
     fi
 
-    if grep -q $DOUBLE <<< "$INPUT_SOURCE_FILES"; then
+    if grep -q $DOUBLE <<<"$INPUT_SOURCE_FILES"; then
         OIFS=$IFS
         IFS=$DOUBLE
         SPLIT=true
@@ -48,7 +48,7 @@ if [ -n "$INPUT_SOURCE_FILES" ]; then
 
     if [ "$SPLIT" = true ]; then
         echo "IFS = >$IFS<"
-        read -a arr <<< "$INPUT_SOURCE_FILES"
+        read -a arr <<<"$INPUT_SOURCE_FILES"
 
         for FILE in "${arr[@]}"; do
 
@@ -63,14 +63,14 @@ if [ -n "$INPUT_SOURCE_FILES" ]; then
 
             SOURCES_LIST="$SOURCES_LIST --source $FILE"
             echo "Checking quoted file >$FILE<"
-        
+
         done
 
         IFS=$OIFS
         unset OIFS
 
-    else 
-        read -a arr <<< "$INPUT_SOURCE_FILES"
+    else
+        read -a arr <<<"$INPUT_SOURCE_FILES"
 
         for FILE in "${arr[@]}"; do
             SOURCES_LIST="$SOURCES_LIST --source $FILE"
@@ -94,12 +94,10 @@ else
     pyspelling --config $SPELLCHECK_CONFIG_FILE $TASK_NAME $SOURCES_LIST
 fi
 
-
-
 EXITCODE=$?
 
-test $EXITCODE -gt 1 && echo "::error title=Spelling check::Spelling check action failed, please check diagnostics";
+test $EXITCODE -gt 1 && echo "::error title=Spelling check::Spelling check action failed, please check diagnostics"
 
-test $EXITCODE -eq 1 && echo "::error title=Spelling errors::Files in repository contain spelling errors";
+test $EXITCODE -eq 1 && echo "::error title=Spelling errors::Files in repository contain spelling errors"
 
 exit $EXITCODE
